@@ -18,7 +18,7 @@ const db = mysql.createConnection({
 // Connect DB
 db.connect((err) => {
     if (err) {
-        throw err
+        console.log(err)
     }
     console.log('Database Connected!')
 })
@@ -65,7 +65,7 @@ app.get('/index', (req, res, next) => {
 app.get('/users', (req, res, next) => {
     let sql = `select users.id as userid, users.name as username, users.userimage as uimage, institutes.id as instituteid, institutes.name as institutename, institutes.address as address from users join institutes on (users.institute_id = institutes.id)`
     db.query(sql, (err, result) => {
-        if (err) throw err
+        if (err) console.log(err)
         console.log(result)
         res.render('users.ejs', { result: result })
     })
@@ -80,7 +80,7 @@ app.post('/newuser', (req, res, next) => {
     console.log(req.body)
     let sql = `insert into users (name, institute_id, userimage) values ("${req.body.name}", "${req.body.instituteid}", "${req.body.imglink}")`
     db.query(sql, (err, result) => {
-        if (err) throw err
+        if (err) console.log(err)
         console.log(result)
         res.render('userform.ejs')
     })
@@ -89,7 +89,7 @@ app.post('/newuser', (req, res, next) => {
 app.get('/institutes', (req, res, next) => {
     let sql = `select * from institutes`
     db.query(sql, (err, result) => {
-        if (err) throw err
+        if (err) console.log(err)
         console.log(result)
         res.render('institutes.ejs', { result: result })
     })
@@ -104,7 +104,7 @@ app.post('/newinstitute', (req, res, next) => {
     console.log(req.body)
     let sql = `insert into institutes (name, address, image) values ("${req.body.name}", "${req.body.address}", "${req.body.imglink}")`
     db.query(sql, (err, result) => {
-        if (err) throw err
+        if (err) console.log(err)
         console.log(result)
         res.render('instituteform.ejs')
     })
@@ -114,7 +114,7 @@ app.get('/questions', (req, res, next) => {
     let sql = `select users.name as authorname, questions.title, questions.description, questions.score, questions.qimage from users join questions on users.id = questions.author_id;
     `
     db.query(sql, (err, result) => {
-        if (err) throw err
+        if (err) console.log(err)
         console.log(result)
         res.render('questions.ejs', { result: result })
     })
@@ -129,7 +129,7 @@ app.post('/newquestion', (req, res, next) => {
     console.log(req.body)
     let sql = `insert into questions (title, description, author_id, score, contest_id, qimage) values ("${req.body.title}", "${req.body.description}", "${req.body.authorid}", "${req.body.score}", "${req.body.contestid}", "${req.body.imglink}")`
     db.query(sql, (err, result) => {
-        if (err) throw err
+        if (err) console.log(err)
         console.log(result)
         res.render('questionform.ejs')
     })
@@ -138,7 +138,7 @@ app.post('/newquestion', (req, res, next) => {
 app.get('/contests', (req, res, next) => {
     let sql = `select * from contests`
     db.query(sql, (err, result) => {
-        if (err) throw err
+        if (err) console.log(err)
         console.log(result)
         res.render('contests.ejs', { result: result })
     })
@@ -153,7 +153,7 @@ app.post('/newcontest', (req, res, next) => {
     console.log(req.body)
     let sql = `insert into contests (name, description, startsat, endsat, cimage) values ("${req.body.name}", "${req.body.description}", "${req.body.startsat}", "${req.body.endsat}", "${req.body.imglink}")`
     db.query(sql, (err, result) => {
-        if (err) throw err
+        if (err) console.log(err)
         console.log(result)
         res.render('contestform.ejs')
     })
@@ -162,7 +162,7 @@ app.post('/newcontest', (req, res, next) => {
 app.get('/progress', (req, res, next) => {
     let sql = `select users.name, sum(questions.score) as score from users natural join questions natural join usersquestions group by users.name order by sum(score) desc`
     db.query(sql, (err, result) => {
-        if (err) throw err
+        if (err) console.log(err)
         console.log(result)
         res.render('progress.ejs', { result: result })
     })
@@ -177,7 +177,7 @@ app.post('/solvequestion', (req, res, next) => {
     console.log(req.body)
     let sql = `insert into usersquestions (user_id, question_id) values ("${req.body.id1}", "${req.body.id2}")`
     db.query(sql, (err, result) => {
-        if (err) throw err
+        if (err) console.log(err)
         console.log(result)
         res.render('progressform.ejs')
     })
@@ -187,7 +187,7 @@ app.post('/solvequestion', (req, res, next) => {
 app.get('/createdb', (req, res) => {
     let sql = 'CREATE DATABASE codemight'
     db.query(sql, (err, result) => {
-        if (err) throw err
+        if (err) console.log(err)
         console.log(result)
         res.send('Database created!')
     })
@@ -197,7 +197,7 @@ app.get('/createdb', (req, res) => {
 app.get('/createinstitutes', (req, res) => {
     let sql = 'CREATE TABLE institutes(id int AUTO_INCREMENT, name VARCHAR(255), address VARCHAR(255), image text, PRIMARY KEY(id))'
     db.query(sql, (err, result) => {
-        if (err) throw err
+        if (err) console.log(err)
         console.log(result)
         res.send('Institutes table created!')
     })
@@ -207,7 +207,7 @@ app.get('/createinstitutes', (req, res) => {
 app.get('/createcontests', (req, res) => {
     let sql = 'CREATE TABLE contests(id int AUTO_INCREMENT, name VARCHAR(255), description longtext, startsat datetime, endsat datetime, cimage text, PRIMARY KEY(id))'
     db.query(sql, (err, result) => {
-        if (err) throw err
+        if (err) console.log(err)
         console.log(result)
         res.send('Contests table created!')
     })
@@ -217,7 +217,7 @@ app.get('/createcontests', (req, res) => {
 app.get('/createquestions', (req, res) => {
     let sql = 'CREATE TABLE questions(id int AUTO_INCREMENT, title VARCHAR(255), description longtext, author_id int, score int, contest_id int, qimage text, PRIMARY KEY(id))'
     db.query(sql, (err, result) => {
-        if (err) throw err
+        if (err) console.log(err)
         console.log(result)
         res.send('Questions table created!')
     })
@@ -227,7 +227,7 @@ app.get('/createquestions', (req, res) => {
 app.get('/createusers', (req, res) => {
     let sql = 'CREATE TABLE users(id int AUTO_INCREMENT, name VARCHAR(255), institute_id int, userimage text, PRIMARY KEY(id))'
     db.query(sql, (err, result) => {
-        if (err) throw err
+        if (err) console.log(err)
         console.log(result)
         res.send('Users table created!')
     })
@@ -237,7 +237,7 @@ app.get('/createusers', (req, res) => {
 app.get('/createusersquestions', (req, res) => {
     let sql = 'CREATE TABLE usersquestions(user_id int, question_id int)'
     db.query(sql, (err, result) => {
-        if (err) throw err
+        if (err) console.log(err)
         console.log(result)
         res.send('Users-Questions table created!')
     })
