@@ -160,7 +160,7 @@ app.post('/newcontest', (req, res, next) => {
 })
 
 app.get('/progress', (req, res, next) => {
-    let sql = `select users.name, sum(questions.score) as score from users natural join questions natural join usersquestions group by users.name order by sum(score) desc`
+    let sql = `select users.name as name, temp.sum from users left join (select usersquestions.user_id as uid, sum(questions.score) as sum from usersquestions join questions on usersquestions.question_id = questions.id group by uid order by sum desc) as temp on users.id = temp.uid order by temp.sum desc;`
     db.query(sql, (err, result) => {
         if (err) console.log(err)
         console.log(result)
